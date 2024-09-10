@@ -1,8 +1,12 @@
 package org.example.io.felipepoliveira.coinex.models
 
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import java.time.LocalDateTime
 import java.util.*
 
+@Entity
+@Table(name = "customer")
 class CustomerModel(
     id: Long,
     uuid: UUID,
