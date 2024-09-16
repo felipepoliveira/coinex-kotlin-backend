@@ -1,6 +1,6 @@
-package org.example.io.felipepoliveira.coinex.dao
+package io.felipepoliveira.coinex.dao
 
-import org.example.io.felipepoliveira.coinex.models.UserModel
+import io.felipepoliveira.coinex.models.UserModel
 
 interface UserDAO: DAO<Long, UserModel> {
 

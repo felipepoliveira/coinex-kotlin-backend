@@ -1,4 +1,4 @@
-package org.example.io.felipepoliveira.coinex.models
+package io.felipepoliveira.coinex.models
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull

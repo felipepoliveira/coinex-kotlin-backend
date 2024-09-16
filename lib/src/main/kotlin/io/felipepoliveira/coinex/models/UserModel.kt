@@ -1,9 +1,10 @@
-package org.example.io.felipepoliveira.coinex.models
+package io.felipepoliveira.coinex.models
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -19,7 +20,7 @@ open class UserModel(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?,
     /**
      * Generated UUID for the user model
      */
@@ -29,15 +30,15 @@ open class UserModel(
      * The name of the user
      */
     @Column(name = "name", nullable = false, length = 60)
-    @Size(min = 2, max = 60)
-    @NotNull
+    @field:Size(min = 2, max = 60)
+    @field:NotNull
     val name: String,
     /**
      * The primary e-mail of the user
      */
     @Column(name = "primary_email", nullable = false, length = 120)
-    @Email
-    @NotNull
+    @field:Email
+    @field:NotNull
     val primaryEmail: String,
     /**
      * The hashed password of the user
@@ -50,4 +51,11 @@ open class UserModel(
      */
     @Column(name = "primary_email_confirmed_at", nullable = true)
     val primaryEmailConfirmedAt: LocalDateTime?,
+
+    /**
+     * Date when the account was created
+     */
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @field:NotNull
+    val createdAt: LocalDate,
 )

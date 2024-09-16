@@ -1,4 +1,4 @@
-package org.example.io.felipepoliveira.coinex.dao
+package io.felipepoliveira.coinex.dao
 
 /**
  * Main abstraction for every data access object entity

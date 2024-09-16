@@ -1,7 +1,9 @@
-package org.example.io.felipepoliveira.coinex.models
+package io.felipepoliveira.coinex.models
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
+import io.felipepoliveira.coinex.models.CurrencyModel
+import io.felipepoliveira.coinex.models.UserModel
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
