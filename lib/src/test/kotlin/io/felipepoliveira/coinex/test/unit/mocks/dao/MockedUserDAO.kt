@@ -13,6 +13,10 @@ class MockedUserDAO @Autowired constructor(
     val mockedCustomerDAO: MockedCustomerDAO,
 ) : UserDAO, MockedDAO<Long, UserModel>() {
 
+    companion object {
+        const val DEFAULT_PASSWORD: String = "Pwd123!c"
+    }
+
     private val mockedDatabase = mutableListOf<MockedObject<UserModel>>()
 
     init {

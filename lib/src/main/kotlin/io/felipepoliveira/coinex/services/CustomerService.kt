@@ -20,8 +20,6 @@ class CustomerService @Autowired constructor(
     validator: SmartValidator,
 ) : BaseService(validator) {
 
-
-
     /**
      * Create a Customer account into the platform
      */

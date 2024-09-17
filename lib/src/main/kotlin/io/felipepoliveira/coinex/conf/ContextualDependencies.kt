@@ -16,6 +16,11 @@ interface ContextualDependencies {
      * Return an instance containing properties used in relational database configuration
      */
     fun relationalDatabaseProperties(): Properties
+
+    /**
+     * Return the secret key used to generate the password recovery token
+     */
+    fun secretKeyForPasswordRecoveryToken(): ByteArray
 }
 
 class DevelopmentDependencies : ContextualDependencies {

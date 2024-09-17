@@ -21,9 +21,9 @@ class MockedCustomerDAO : CustomerDAO, MockedDAO<Long, CustomerModel>() {
         primaryEmail = "customer1@email.com",
         uuid = UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
         createdAt = LocalDate.now(),
-        hashedPassword = hashPasswordToString("Pwd123!c"),
+        hashedPassword = hashPasswordToString(MockedUserDAO.DEFAULT_PASSWORD),
         primaryEmailConfirmedAt = null,
-        id = null,
+        id = 1,
     )
 
     override fun findById(id: Long): CustomerModel? {

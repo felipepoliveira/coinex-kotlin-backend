@@ -40,5 +40,6 @@ enum class BusinessRuleExceptionType(
     DataValidation(httpStatus = 422),
     InvalidEmail(httpStatus = 403),
     InvalidPassword(httpStatus = 403),
+    NotFound(httpStatus = 404)
 }
 
