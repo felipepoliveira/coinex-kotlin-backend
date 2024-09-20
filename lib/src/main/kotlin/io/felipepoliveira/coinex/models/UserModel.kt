@@ -14,7 +14,7 @@ import java.util.UUID
     Index(columnList = "email", name = "UI_email_AT_user"),
     Index(columnList = "uuid", name = "UI_uuid_AT_user"),
 ])
-open class UserModel(
+class UserModel(
     /**
      * ID of the user represented by UNSIGNED INT64
      */
@@ -58,4 +58,18 @@ open class UserModel(
     @Column(name = "created_at", nullable = false, updatable = false)
     @field:NotNull
     val createdAt: LocalDate,
+
+    /**
+     * The preferred language of the user
+     */
+    @Column(name = "preferred_language", nullable = false)
+    @field:NotNull
+    val preferredLanguage: Language
 )
+
+enum class Language {
+    /**
+     * United States/English
+     */
+    UsEn
+}

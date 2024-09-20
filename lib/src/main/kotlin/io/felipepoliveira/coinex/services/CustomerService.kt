@@ -56,6 +56,7 @@ class CustomerService @Autowired constructor(
             hashedPassword = hashPasswordToString(dto.password),
             primaryEmailConfirmedAt = null,
             createdAt = LocalDate.now(),
+            preferredLanguage = dto.preferredLanguage
         )
         customerDAO.persist(customer)
 

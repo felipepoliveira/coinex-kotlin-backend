@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.test.unit.cases.services
 
+import io.felipepoliveira.coinex.models.Language
 import io.felipepoliveira.coinex.security.verifyPassword
 import io.felipepoliveira.coinex.services.BusinessRuleException
 import io.felipepoliveira.coinex.services.BusinessRuleExceptionType
@@ -27,7 +28,8 @@ class RegisterCustomerTests @Autowired constructor(
         val dto = CreateCustomerDTO(
             name = "Test Customer",
             primaryEmail = "customer@email.com",
-            password = "Pwd132!c"
+            password = "Pwd132!c",
+            preferredLanguage = Language.UsEn,
         )
 
         val createdCustomer = customerService.registerCustomer(dto)
@@ -45,7 +47,8 @@ class RegisterCustomerTests @Autowired constructor(
         val dto = CreateCustomerDTO(
             name = "",
             primaryEmail = "not a email",
-            password = "1"
+            password = "1",
+            preferredLanguage = Language.UsEn,
         )
 
         val exception = shouldThrow<BusinessRuleException> { customerService.registerCustomer(dto) }
@@ -60,7 +63,8 @@ class RegisterCustomerTests @Autowired constructor(
         val dto = CreateCustomerDTO(
             name = "Test Customer",
             primaryEmail = "customer@email.com",
-            password = "weakpassword"
+            password = "weakpassword",
+            preferredLanguage = Language.UsEn,
         )
 
         val exception = shouldThrow<BusinessRuleException> { customerService.registerCustomer(dto) }
@@ -72,7 +76,8 @@ class RegisterCustomerTests @Autowired constructor(
         val dto = CreateCustomerDTO(
             name = "Test Customer",
             primaryEmail = mockedCustomerDAO.customer1().primaryEmail,
-            password = "Pwd132!c"
+            password = "Pwd132!c",
+            preferredLanguage = Language.UsEn,
         )
 
         val exception = shouldThrow<BusinessRuleException> { customerService.registerCustomer(dto) }

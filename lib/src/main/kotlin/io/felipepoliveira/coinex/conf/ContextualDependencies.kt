@@ -2,10 +2,18 @@ package io.felipepoliveira.coinex.conf
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.felipepoliveira.coinex.mail.LocalTestsMailProvider
+import io.felipepoliveira.coinex.mail.MailProvider
+import java.io.File
 import java.util.Properties
 import javax.sql.DataSource
 
 interface ContextualDependencies {
+
+    /**
+     * The mail provider that will handle mail messaging services
+     */
+    fun mailProvider(): MailProvider
 
     /**
      * Return an DataSource instance containing a connection object that will be used in the relational database
@@ -24,6 +32,9 @@ interface ContextualDependencies {
 }
 
 class DevelopmentDependencies : ContextualDependencies {
+
+    override fun mailProvider(): MailProvider = LocalTestsMailProvider(File(System.getProperty("java.io.tmpdir")))
+
     override fun relationalDatabaseDataSource(): DataSource {
         val config = HikariConfig()
         config.jdbcUrl = "jdbc:mysql://localhost:3306/coinex?createDatabaseIfNotExists=true"
@@ -47,5 +58,7 @@ class DevelopmentDependencies : ContextualDependencies {
 
         return properties
     }
+
+    override fun secretKeyForPasswordRecoveryToken(): ByteArray = "SECRET_KEY_FOR_PWD_RCV_TOKEN".toByteArray()
 
 }

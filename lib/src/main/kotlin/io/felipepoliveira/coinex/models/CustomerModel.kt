@@ -16,4 +16,5 @@ class CustomerModel(
     hashedPassword: String,
     primaryEmailConfirmedAt: LocalDateTime?,
     createdAt: LocalDate,
-) : UserModel(id, uuid, name, primaryEmail, hashedPassword, primaryEmailConfirmedAt, createdAt)
+    preferredLanguage: Language,
+) : UserModel(id, uuid, name, primaryEmail, hashedPassword, primaryEmailConfirmedAt, createdAt, preferredLanguage)

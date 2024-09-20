@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.services.dto.customer
 
+import io.felipepoliveira.coinex.models.Language
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -11,6 +12,12 @@ data class CreateCustomerDTO(
     @field:NotNull
     @field:Size(min = 2, max = 60)
     val name: String,
+
+    /**
+     * The preferred language of the user
+     */
+    @field:NotNull
+    val preferredLanguage: Language,
 
     /**
      * The primary email of the created customer account

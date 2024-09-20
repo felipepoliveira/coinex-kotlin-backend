@@ -2,6 +2,7 @@ package io.felipepoliveira.coinex.test.unit.mocks.dao
 
 import io.felipepoliveira.coinex.dao.CustomerDAO
 import io.felipepoliveira.coinex.models.CustomerModel
+import io.felipepoliveira.coinex.models.Language
 import io.felipepoliveira.coinex.security.hashPasswordToString
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -24,6 +25,7 @@ class MockedCustomerDAO : CustomerDAO, MockedDAO<Long, CustomerModel>() {
         hashedPassword = hashPasswordToString(MockedUserDAO.DEFAULT_PASSWORD),
         primaryEmailConfirmedAt = null,
         id = 1,
+        preferredLanguage = Language.UsEn
     )
 
     override fun findById(id: Long): CustomerModel? {
