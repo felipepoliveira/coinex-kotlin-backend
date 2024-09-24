@@ -30,6 +30,14 @@ class UserHibernate @Autowired constructor(
             .fetchFirst()
     }
 
+    override fun findByUuid(uuid: String): UserModel? {
+        return prepareQuery("user")
+            .where("user.uuid = :uuid")
+            .createFetchQuery()
+            .setParameter("uuid", uuid)
+            .fetchFirst()
+    }
+
     override fun getDAOModelType(): Class<UserModel> = UserModel::class.java
 
 }

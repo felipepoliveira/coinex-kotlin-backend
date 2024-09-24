@@ -25,7 +25,7 @@ class MockedCustomerDAO : CustomerDAO, MockedDAO<Long, CustomerModel>() {
         hashedPassword = hashPasswordToString(MockedUserDAO.DEFAULT_PASSWORD),
         primaryEmailConfirmedAt = null,
         id = 1,
-        preferredLanguage = Language.UsEn
+        preferredLanguage = Language.EN_US
     )
 
     override fun findById(id: Long): CustomerModel? {

@@ -38,6 +38,7 @@ enum class BusinessRuleExceptionType(
     val httpStatus: Int
 ) {
     DataValidation(httpStatus = 422),
+    InvalidCredentials(httpStatus = 403),
     InvalidEmail(httpStatus = 403),
     InvalidPassword(httpStatus = 403),
     NotFound(httpStatus = 404)

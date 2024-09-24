@@ -29,6 +29,10 @@ class MockedUserDAO @Autowired constructor(
         return mockedDatabase.find { m -> m.reference.primaryEmail == primaryEmail }?.mock()
     }
 
+    override fun findByUuid(uuid: String): UserModel? {
+        return mockedDatabase.find { m -> m.reference.uuid.toString() == uuid }?.mock()
+    }
+
     override fun findById(id: Long): UserModel? {
         return mockedDatabase.find { m -> m.reference.id == id }?.mock()
     }

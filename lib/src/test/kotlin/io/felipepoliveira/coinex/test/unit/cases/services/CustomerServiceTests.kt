@@ -29,7 +29,7 @@ class RegisterCustomerTests @Autowired constructor(
             name = "Test Customer",
             primaryEmail = "customer@email.com",
             password = "Pwd132!c",
-            preferredLanguage = Language.UsEn,
+            preferredLanguage = Language.EN_US,
         )
 
         val createdCustomer = customerService.registerCustomer(dto)
@@ -48,7 +48,7 @@ class RegisterCustomerTests @Autowired constructor(
             name = "",
             primaryEmail = "not a email",
             password = "1",
-            preferredLanguage = Language.UsEn,
+            preferredLanguage = Language.EN_US,
         )
 
         val exception = shouldThrow<BusinessRuleException> { customerService.registerCustomer(dto) }
@@ -64,7 +64,7 @@ class RegisterCustomerTests @Autowired constructor(
             name = "Test Customer",
             primaryEmail = "customer@email.com",
             password = "weakpassword",
-            preferredLanguage = Language.UsEn,
+            preferredLanguage = Language.EN_US,
         )
 
         val exception = shouldThrow<BusinessRuleException> { customerService.registerCustomer(dto) }
@@ -77,7 +77,7 @@ class RegisterCustomerTests @Autowired constructor(
             name = "Test Customer",
             primaryEmail = mockedCustomerDAO.customer1().primaryEmail,
             password = "Pwd132!c",
-            preferredLanguage = Language.UsEn,
+            preferredLanguage = Language.EN_US,
         )
 
         val exception = shouldThrow<BusinessRuleException> { customerService.registerCustomer(dto) }

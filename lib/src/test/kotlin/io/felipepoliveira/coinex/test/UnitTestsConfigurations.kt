@@ -35,6 +35,10 @@ class UnitTestsConfigurations : ContextualDependencies {
 
     @Bean
     fun localValidatorFactoryBean() = LocalValidatorFactoryBean()
+
+    override fun accountsWebappUrl() = "MOCKED"
+
+    @Bean
     override fun mailProvider() = object : MailProvider {
         override fun sendMail(
             title: String,

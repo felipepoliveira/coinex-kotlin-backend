@@ -17,6 +17,7 @@ import java.util.*
 class CustomerService @Autowired constructor(
     val customerDAO: CustomerDAO,
     val userDAO: UserDAO,
+    val userService: UserService,
     validator: SmartValidator,
 ) : BaseService(validator) {
 
@@ -59,6 +60,9 @@ class CustomerService @Autowired constructor(
             preferredLanguage = dto.preferredLanguage
         )
         customerDAO.persist(customer)
+
+        // Send the email confirmation email to the customer when its account is created
+        userService.sendEmailConfirmationEmail(customer)
 
         return customer
     }

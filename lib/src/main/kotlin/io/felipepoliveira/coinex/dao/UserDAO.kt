@@ -8,4 +8,9 @@ interface UserDAO: DAO<Long, UserModel> {
      * Find a UserModel identified by its primary email
      */
     fun findByPrimaryEmail(primaryEmail: String): UserModel?
+
+    /**
+     * Find a UserModel identified by its uuid
+     */
+    fun findByUuid(uuid: String): UserModel?
 }

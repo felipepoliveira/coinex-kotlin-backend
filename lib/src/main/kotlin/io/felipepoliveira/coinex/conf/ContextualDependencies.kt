@@ -11,6 +11,11 @@ import javax.sql.DataSource
 interface ContextualDependencies {
 
     /**
+     * Return a URL to the accounts Webapp URL
+     */
+    fun accountsWebappUrl(): String
+
+    /**
      * The mail provider that will handle mail messaging services
      */
     fun mailProvider(): MailProvider
@@ -32,6 +37,8 @@ interface ContextualDependencies {
 }
 
 class DevelopmentDependencies : ContextualDependencies {
+
+    override fun accountsWebappUrl(): String = "http://localhost:3000"
 
     override fun mailProvider(): MailProvider = LocalTestsMailProvider(File(System.getProperty("java.io.tmpdir")))
 

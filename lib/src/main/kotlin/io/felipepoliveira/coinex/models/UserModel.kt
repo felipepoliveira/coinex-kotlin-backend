@@ -45,7 +45,7 @@ class UserModel(
      */
     @Column(name = "hsd_pwd", nullable = false, length = 64)
     @NotNull
-    val hashedPassword: String,
+    var hashedPassword: String,
     /**
      * Timestamp when the primary email was confirmed
      */
@@ -71,5 +71,5 @@ enum class Language {
     /**
      * United States/English
      */
-    UsEn
+    EN_US
 }
