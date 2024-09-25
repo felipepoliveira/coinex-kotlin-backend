@@ -28,7 +28,7 @@ class UnitTestsConfigurations : ContextualDependencies {
      * Create a mocked cache repository
      */
     @Bean
-    fun cacheRepository(): CacheRepository = object : CacheRepository {
+    override fun cacheRepository(): CacheRepository = object : CacheRepository {
         override fun getString(key: String): String? = null
         override fun putString(key: String, value: String, timeToLive: Duration?) {}
     }

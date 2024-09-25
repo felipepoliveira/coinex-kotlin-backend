@@ -11,7 +11,7 @@ import java.util.UUID
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "user", indexes = [
-    Index(columnList = "email", name = "UI_email_AT_user"),
+    Index(columnList = "primary_email", name = "UI_primary_email_AT_user"),
     Index(columnList = "uuid", name = "UI_uuid_AT_user"),
 ])
 class UserModel(

@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.conf
 
+import io.felipepoliveira.coinex.cache.CacheRepository
 import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
 import org.springframework.context.annotation.Bean
@@ -15,11 +16,17 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 
 @Configuration
 @ComponentScans(value = [
+    ComponentScan("io.felipepoliveira.coinex.cache"),
     ComponentScan("io.felipepoliveira.coinex.dao.hibernate"),
-    ComponentScan("io.felipepoliveira.coinex.services")
+    ComponentScan("io.felipepoliveira.coinex.mail"),
+    ComponentScan("io.felipepoliveira.coinex.security"),
+    ComponentScan("io.felipepoliveira.coinex.services"),
 ])
 @EnableTransactionManagement
 open class CoinexConfiguration {
+
+    @Bean
+    fun cacheRepository(contextualDependencies: ContextualDependencies): CacheRepository = contextualDependencies.cacheRepository()
 
     @Bean
     fun contextualDependencies(applicationContextProvider: ApplicationContextProvider): ContextualDependencies {
@@ -48,6 +55,9 @@ open class CoinexConfiguration {
 
     @Bean
     fun localValidatorFactoryBean() = LocalValidatorFactoryBean()
+
+    @Bean
+    fun mailProvider(contextualDependencies: ContextualDependencies) = contextualDependencies.mailProvider()
 
     @Bean
     fun transactionManager(entityManagerFactory: EntityManagerFactory): PlatformTransactionManager {

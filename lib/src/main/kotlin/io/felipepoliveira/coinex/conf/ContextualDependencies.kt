@@ -2,8 +2,12 @@ package io.felipepoliveira.coinex.conf
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.felipepoliveira.coinex.cache.CacheRepository
+import io.felipepoliveira.coinex.cache.RedisCacheRepository
 import io.felipepoliveira.coinex.mail.LocalTestsMailProvider
 import io.felipepoliveira.coinex.mail.MailProvider
+import redis.clients.jedis.JedisPool
+import redis.clients.jedis.JedisPoolConfig
 import java.io.File
 import java.util.Properties
 import javax.sql.DataSource
@@ -14,6 +18,11 @@ interface ContextualDependencies {
      * Return a URL to the accounts Webapp URL
      */
     fun accountsWebappUrl(): String
+
+    /**
+     * Return the instance used to strore cache data
+     */
+    fun cacheRepository(): CacheRepository
 
     /**
      * The mail provider that will handle mail messaging services
@@ -39,6 +48,17 @@ interface ContextualDependencies {
 class DevelopmentDependencies : ContextualDependencies {
 
     override fun accountsWebappUrl(): String = "http://localhost:3000"
+
+    override fun cacheRepository(): CacheRepository {
+        val poolConfig = JedisPoolConfig().apply {
+            blockWhenExhausted = true
+            maxTotal = 24
+            maxIdle = 12
+            minIdle = 6
+        }
+
+        return RedisCacheRepository(JedisPool(poolConfig, "localhost", 6379))
+    }
 
     override fun mailProvider(): MailProvider = LocalTestsMailProvider(File(System.getProperty("java.io.tmpdir")))
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-class UserHibernate @Autowired constructor(
+open class UserHibernate @Autowired constructor(
     entityManager: EntityManager
 ) : UserDAO, HibernateDAO<Long, UserModel>(entityManager) {
 

@@ -10,8 +10,8 @@ interface MailProvider {
     fun sendMail(title: String, content: ByteArray, contentType: MailContentType, vararg mailRecipients: MailRecipient)
 
     /**
-     * Call a sendMail inside a thread object. For the email to be sent the user of this method should call
-     * .start() from the returned object of this method
+     * Call a sendMail inside a thread object. There is no need to call .start() as this method automatically starts
+     * the thread
      */
     fun sendMailAsync(title: String, content: ByteArray, contentType: MailContentType, vararg mailRecipients: MailRecipient): Thread {
         return thread {

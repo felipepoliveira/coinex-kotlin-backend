@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "currency_balance", indexes = [
-    Index(columnList = "currency_id, name_id", name = "UI_currency_id_AND_name_id_AT_currency_balance"),
+    Index(columnList = "currency_id, user_id", name = "UI_currency_id_AND_user_id_AT_currency_balance"),
     Index(columnList = "uuid", name = "UI_uuid_AT_currency_balance")
 ])
 class CurrencyBalanceModel(

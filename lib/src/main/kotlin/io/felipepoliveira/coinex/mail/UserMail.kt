@@ -66,7 +66,7 @@ class UserMail(
             content = mailWildcardContent.toString().toByteArray(),
             contentType = MailContentType.TextHtml,
             MailRecipient(recipientUser.primaryEmail, MailRecipientType.To)
-        ).start()
+        )
     }
 
 }
