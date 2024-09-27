@@ -17,6 +17,7 @@ plugins {
 allOpen {
     // Marks all below to be all open
     annotation("org.springframework.context.annotation.Configuration")
+    annotation("org.springframework.stereotype.Service")
     annotation("jakarta.persistence.Entity")
 }
 
@@ -45,6 +46,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
     implementation("org.springframework.security:spring-security-crypto:6.3.3")
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-tx
+    implementation("org.springframework:spring-tx:6.0.9")
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation("mysql:mysql-connector-java:8.0.33")

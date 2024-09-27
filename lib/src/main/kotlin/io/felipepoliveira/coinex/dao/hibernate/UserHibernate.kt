@@ -5,14 +5,13 @@ import io.felipepoliveira.coinex.dao.UserDAO
 import io.felipepoliveira.coinex.dao.hibernate.HibernateDAO
 import io.felipepoliveira.coinex.dao.hibernate.fetchFirst
 import io.felipepoliveira.coinex.models.UserModel
+import jakarta.persistence.PersistenceContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 
 @Repository
-open class UserHibernate @Autowired constructor(
-    entityManager: EntityManager
-) : UserDAO, HibernateDAO<Long, UserModel>(entityManager) {
+open class UserHibernate : UserDAO, HibernateDAO<Long, UserModel>() {
 
     override fun findById(id: Long): UserModel? {
         return prepareQuery("user")

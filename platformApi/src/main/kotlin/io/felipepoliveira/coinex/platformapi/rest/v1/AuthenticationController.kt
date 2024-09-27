@@ -20,6 +20,9 @@ class AuthenticationController @Autowired constructor(
     private val userService: UserService,
 ) : BaseController() {
 
+    /**
+     * Generate an authentication token using email and password combination
+     */
     @PostMapping("/public/tokens/generate-with-email-and-password")
     fun generateTokenWithEmailAndPassword(@RequestBody dto: FindByEmailAndPasswordDTO) = ok {
         // Fetch the user using email and password combination

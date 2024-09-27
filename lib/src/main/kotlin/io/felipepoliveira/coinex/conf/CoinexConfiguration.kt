@@ -22,7 +22,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
     ComponentScan("io.felipepoliveira.coinex.security"),
     ComponentScan("io.felipepoliveira.coinex.services"),
 ])
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 open class CoinexConfiguration {
 
     @Bean
@@ -33,11 +33,6 @@ open class CoinexConfiguration {
         return when (applicationContextProvider.getApplicationContext()) {
             ApplicationContext.Development -> DevelopmentDependencies()
         }
-    }
-
-    @Bean
-    fun entityManager(entityManagerFactory: EntityManagerFactory): EntityManager {
-        return entityManagerFactory.createEntityManager()
     }
 
     @Bean

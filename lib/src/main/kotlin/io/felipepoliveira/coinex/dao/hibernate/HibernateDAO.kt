@@ -2,15 +2,17 @@ package io.felipepoliveira.coinex.dao.hibernate
 
 import io.felipepoliveira.coinex.dao.DAO
 import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import jakarta.persistence.Query
 import org.springframework.beans.factory.annotation.Autowired
 
-abstract class HibernateDAO<K, T> @Autowired constructor(
+abstract class HibernateDAO<K, T> : DAO<K, T> {
+
     /**
-     * Store an instance of the entity manager. The entity manager send commands to the corresponding database
+     * Store the entity manager from persistence context
      */
-    val entityManager: EntityManager
-) : DAO<K, T> {
+    @PersistenceContext
+    lateinit var entityManager: EntityManager
 
     /**
      * Return an instance associated with the type that should be persisted in the database

@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
 
 @Repository
-open class CustomerHibernate(entityManager: EntityManager) : CustomerDAO, HibernateDAO<Long, CustomerModel>(entityManager) {
+open class CustomerHibernate : CustomerDAO, HibernateDAO<Long, CustomerModel>() {
 
     override fun findById(id: Long): CustomerModel? {
         return prepareQuery("customer")

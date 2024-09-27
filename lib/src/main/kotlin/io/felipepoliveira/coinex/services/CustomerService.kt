@@ -9,21 +9,23 @@ import io.felipepoliveira.coinex.dao.UserDAO
 import io.felipepoliveira.coinex.models.CustomerModel
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.SmartValidator
 import java.time.LocalDate
 import java.util.*
 
 @Service
-class CustomerService @Autowired constructor(
-    val customerDAO: CustomerDAO,
-    val userDAO: UserDAO,
-    val userService: UserService,
+open class CustomerService @Autowired constructor(
+    private val customerDAO: CustomerDAO,
+    private val userDAO: UserDAO,
+    private val userService: UserService,
     validator: SmartValidator,
 ) : BaseService(validator) {
 
     /**
      * Create a Customer account into the platform
      */
+    @Transactional()
     fun registerCustomer(dto: CreateCustomerDTO): CustomerModel {
 
         // Validate the DTO

@@ -27,6 +27,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation("com.auth0:java-jwt:4.4.0")
 
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
     implementation("org.springframework.boot:spring-boot-starter-web:3.3.4")
 
