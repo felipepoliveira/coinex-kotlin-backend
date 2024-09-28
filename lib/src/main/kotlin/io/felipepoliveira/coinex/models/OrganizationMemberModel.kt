@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDateTime
@@ -14,6 +15,7 @@ class OrganizationMemberModel(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     val id: Long,
 
     /**

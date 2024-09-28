@@ -8,6 +8,7 @@ import io.felipepoliveira.coinex.models.UserModel
 import jakarta.persistence.PersistenceContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 
 @Repository
@@ -29,7 +30,7 @@ open class UserHibernate : UserDAO, HibernateDAO<Long, UserModel>() {
             .fetchFirst()
     }
 
-    override fun findByUuid(uuid: String): UserModel? {
+    override fun findByUuid(uuid: UUID): UserModel? {
         return prepareQuery("user")
             .where("user.uuid = :uuid")
             .createFetchQuery()

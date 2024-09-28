@@ -46,7 +46,7 @@ class UserService @Autowired constructor(
      * as this method expects that the user always exists
      */
     fun assertFindByUuid(uuid: UUID): UserModel {
-        return userDAO.findByUuid(uuid.toString()) ?:
+        return userDAO.findByUuid(uuid) ?:
             throw Exception("Server expected to find the user with UUID $uuid but it is not on the database")
     }
 

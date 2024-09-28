@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -15,6 +16,7 @@ class CurrencyModel(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     val id: Long,
     /**
      * Store the organization that owns the currency

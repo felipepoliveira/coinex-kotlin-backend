@@ -7,7 +7,7 @@ data class PasswordRecoveryTokenPayload(
     /**
      * The UUID of the user that owns the token
      */
-    val userUuid: String,
+    val userUuid: UUID,
 
     /**
      * When the token was issued

@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import io.felipepoliveira.coinex.models.CurrencyModel
@@ -19,6 +20,7 @@ class CurrencyBalanceModel(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     val id: Long,
     /**
      * Store the UUID of the currency balance model

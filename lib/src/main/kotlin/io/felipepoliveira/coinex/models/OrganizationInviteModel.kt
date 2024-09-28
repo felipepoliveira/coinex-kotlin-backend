@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
@@ -17,6 +18,7 @@ class OrganizationInviteModel(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     val id: Long,
 
     /**

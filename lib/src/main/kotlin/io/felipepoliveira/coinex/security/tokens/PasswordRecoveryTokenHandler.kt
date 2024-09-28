@@ -23,14 +23,14 @@ class PasswordRecoveryTokenHandler @Autowired constructor(
     }
 
     fun issue(user: UserModel, expiresAt: LocalDateTime): PasswordRecoveryTokenPayload {
-        val userUuid = user.uuid.toString()
+        val userUuid = user.uuid
         val issuedAt = LocalDateTime.now()
         val token = JWT.create()
             .withIssuer(ISSUER)
             .withSubject(SUBJECT)
             .withIssuedAt(issuedAt.toDate())
             .withExpiresAt(expiresAt.toDate())
-            .withClaim("uuid", userUuid)
+            .withClaim("uuid", userUuid.toString())
             .sign(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken()))
 
         return PasswordRecoveryTokenPayload(
@@ -50,7 +50,7 @@ class PasswordRecoveryTokenHandler @Autowired constructor(
 
         return PasswordRecoveryTokenPayload(
             issuedAt = jwtPayload.issuedAt.toLocalDateTime(),
-            userUuid = jwtPayload.getClaim("uuid").asString(),
+            userUuid = UUID.fromString(jwtPayload.getClaim("uuid").asString()),
             expiresAt = jwtPayload.expiresAt.toLocalDateTime(),
             token = token
         )

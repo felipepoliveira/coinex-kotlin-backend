@@ -1,5 +1,6 @@
 package io.felipepoliveira.coinex.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
@@ -20,6 +21,7 @@ class UserModel(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     val id: Long?,
     /**
      * Generated UUID for the user model
@@ -45,6 +47,7 @@ class UserModel(
      */
     @Column(name = "hsd_pwd", nullable = false, length = 64)
     @NotNull
+    @JsonIgnore
     var hashedPassword: String,
     /**
      * Timestamp when the primary email was confirmed
