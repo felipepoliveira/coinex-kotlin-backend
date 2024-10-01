@@ -41,4 +41,12 @@ class OrganizationModel(
     @NotNull
     @Size(min = 1, max = 60)
     val name: String,
+
+    /**
+     * Store the currency name
+     */
+    @Column(name = "currency_name", nullable = false, length = 30)
+    @NotNull
+    @Size(min = 1, max = 30)
+    val currencyName: String,
 )

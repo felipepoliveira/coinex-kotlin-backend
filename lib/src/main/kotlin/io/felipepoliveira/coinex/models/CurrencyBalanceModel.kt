@@ -3,7 +3,6 @@ package io.felipepoliveira.coinex.models
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
-import io.felipepoliveira.coinex.models.CurrencyModel
 import io.felipepoliveira.coinex.models.UserModel
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -11,7 +10,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "currency_balance", indexes = [
-    Index(columnList = "currency_id, user_id", name = "UI_currency_id_AND_user_id_AT_currency_balance"),
+    Index(columnList = "organization_id, user_id", name = "UI_organization_id_AND_user_id_AT_currency_balance"),
     Index(columnList = "uuid", name = "UI_uuid_AT_currency_balance")
 ])
 class CurrencyBalanceModel(
@@ -39,9 +38,9 @@ class CurrencyBalanceModel(
      * Store the currency model
      */
     @ManyToOne
-    @JoinColumn(name = "currency_id", nullable = false)
+    @JoinColumn(name = "organization_id", nullable = false)
     @NotNull
-    val currency: CurrencyModel,
+    val organization: OrganizationModel,
 
     /**
      * Store the balance of the currency

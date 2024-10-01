@@ -10,11 +10,14 @@ import io.felipepoliveira.coinex.security.calculatePasswordRank
 import io.felipepoliveira.coinex.security.hashPasswordToString
 import io.felipepoliveira.coinex.security.tokens.EmailConfirmationTokenHandler
 import io.felipepoliveira.coinex.security.tokens.PasswordRecoveryTokenHandler
+import io.felipepoliveira.coinex.security.tokens.PrimaryEmailChangeTokenHandler
+import io.felipepoliveira.coinex.security.tokens.dto.EmailConfirmationTokenPayload
 import io.felipepoliveira.coinex.security.tokens.dto.PasswordRecoveryTokenPayload
 import io.felipepoliveira.coinex.security.verifyPassword
-import io.felipepoliveira.coinex.services.dto.users.ChangePasswordUsingCurrentPasswordAsAuthenticationDTO
-import io.felipepoliveira.coinex.services.dto.users.ChangePasswordUsingRecoveryTokenDTO
-import io.felipepoliveira.coinex.services.dto.users.FindByEmailAndPasswordDTO
+import io.felipepoliveira.coinex.services.dto.users.*
+import io.felipepoliveira.coinex.utils.text.DIGITS
+import io.felipepoliveira.coinex.utils.text.LETTERS_UPPER_CASE
+import io.felipepoliveira.coinex.utils.text.generateRandomText
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.validation.SmartValidator
@@ -28,6 +31,7 @@ import kotlin.time.toDuration
 class UserService @Autowired constructor(
     private val emailConfirmationTokenHandler: EmailConfirmationTokenHandler,
     private val passwordRecoveryTokenHandler: PasswordRecoveryTokenHandler,
+    private val primaryEmailChangeTokenHandler: PrimaryEmailChangeTokenHandler,
     private val serviceTimeoutCache: ServiceTimeoutCache,
     private val userDAO: UserDAO,
     private val userMail: UserMail,
@@ -70,7 +74,7 @@ class UserService @Autowired constructor(
         }
 
         // check for unsafe password
-        if (calculatePasswordRank(dto.newPassword).isAtLeast(PasswordRank.Safe)) {
+        if (!calculatePasswordRank(dto.newPassword).isAtLeast(PasswordRank.Safe)) {
             validationResult.addError("newPassword", "Password was considered unsafe by the server standards")
             throw BusinessRuleException(validationResult)
         }
@@ -99,7 +103,7 @@ class UserService @Autowired constructor(
         }
 
         // Calculate the password rank
-        if (calculatePasswordRank(dto.password).isAtLeast(PasswordRank.Safe)) {
+        if (!calculatePasswordRank(dto.password).isAtLeast(PasswordRank.Safe)) {
             throw BusinessRuleException(
                 BusinessRuleExceptionType.InvalidPassword,
                 "Given password was not considered safe by the platform standards"
@@ -123,6 +127,39 @@ class UserService @Autowired constructor(
 
         // Update the password
         user.hashedPassword = hashPasswordToString(dto.password)
+        userDAO.update(user)
+
+        return user
+    }
+
+    /**
+     * Confirm the user email using a token provided by EmailConfirmationTokenHandler
+     */
+    fun confirmEmailUsingToken(dto: ConfirmEmailUsingTokenDTO): UserModel {
+
+        // check for validation results
+        val validationResult = validate(dto)
+        if (validationResult.hasErrors()) {
+            throw BusinessRuleException(validationResult)
+        }
+
+        // Validate the token
+        val tokenPayload: EmailConfirmationTokenPayload
+        try {
+            tokenPayload = emailConfirmationTokenHandler.validateAndParse(dto.token)
+        } catch (e: JWTVerificationException) {
+            throw BusinessRuleException(
+                type = BusinessRuleExceptionType.InvalidCredentials,
+                reason = "Invalid token provided"
+            )
+        }
+
+        // Fetch the user using the uuid in token
+        val user = userDAO.findByUuid(tokenPayload.userUuid) ?:
+            throw Exception("Fatal error. Server expected to find user identified by UUID ${tokenPayload.userUuid} but it was not found")
+
+        // Confirm the email
+        user.primaryEmailConfirmedAt = LocalDateTime.now()
         userDAO.update(user)
 
         return user
@@ -177,6 +214,36 @@ class UserService @Autowired constructor(
             val expiresAt = LocalDateTime.now().plusDays(30)
             val tokenPayload = passwordRecoveryTokenHandler.issue(user, expiresAt)
             userMail.sendPasswordRecoveryMail(user, tokenPayload.token)
+        }
+    }
+
+    fun sendPrimaryEmailChangeEmail(serviceRequester: ServiceRequester, dto: SendPrimaryEmailChangeEmailDTO) {
+        // check for binding result errors
+        val validationResult = validate(dto)
+        if (validationResult.hasErrors()) {
+            throw BusinessRuleException(validationResult)
+        }
+
+        // check for email availability
+        if (userDAO.findByPrimaryEmail(dto.newEmail) != null) {
+            throw BusinessRuleException(
+                type = BusinessRuleExceptionType.InvalidEmail,
+                reason = "The email '${dto.newEmail}' is not available"
+            )
+        }
+
+        // Fetch the user to execute the service
+        val requester = assertFindByUuid(serviceRequester.userUuid)
+
+        serviceTimeoutCache.executeOnTimeout("USER-${serviceRequester.userUuid}-PRIMARY_EMAIL_CHANGE_MAIL", 5.toDuration(DurationUnit.MINUTES)) {
+            val secretCode = generateRandomText(LETTERS_UPPER_CASE+DIGITS, 12)
+            val tokenPayload = primaryEmailChangeTokenHandler.issue(
+                user = requester,
+                newEmail = dto.newEmail,
+                expiresAt = LocalDateTime.now().plusHours(1),
+                secretCode = secretCode
+            )
+            userMail.sendChangePrimaryEmailMail(requester, dto.newEmail, tokenPayload.token, secretCode)
         }
     }
 }

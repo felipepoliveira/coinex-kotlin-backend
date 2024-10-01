@@ -7,6 +7,8 @@ import java.util.Properties
 sealed class I18n {
     companion object {
         // Store the code for the
+        const val MAIL_CHANGE_PRIMARY_EMAIL_CURRENT_EMAIL_CODE_TITLE = "mails.changePrimaryEmail.currentEmailCode.title"
+        const val MAIL_CHANGE_PRIMARY_EMAIL_NEW_EMAIL_TOKEN_TITLE = "mails.changePrimaryEmail.newEmailToken.title"
         const val MAIL_EMAIL_CONFIRMATION_TITLE = "mails.emailConfirmation.title"
         const val MAIL_PASSWORD_RECOVERY_TITLE = "mails.passwordRecovery.title"
 

@@ -1,8 +1,10 @@
 package io.felipepoliveira.coinex.platformapi.rest.v1
 
+import io.felipepoliveira.coinex.platformapi.rest.v1.dto.SendPasswordRecoveryEmailDTO
 import io.felipepoliveira.coinex.platformapi.security.AuthenticationTokenHandler
 import io.felipepoliveira.coinex.services.ServiceRequester
 import io.felipepoliveira.coinex.services.UserService
+import io.felipepoliveira.coinex.services.dto.users.ChangePasswordUsingRecoveryTokenDTO
 import io.felipepoliveira.coinex.services.dto.users.FindByEmailAndPasswordDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -19,6 +21,14 @@ class AuthenticationController @Autowired constructor(
     private val authenticationTokenHandler: AuthenticationTokenHandler,
     private val userService: UserService,
 ) : BaseController() {
+
+    /**
+     * Change the password using password recovery token
+     */
+    @PostMapping("/public/change-password-using-recovery-token")
+    fun changePasswordUsingRecoveryToken(@RequestBody dto: ChangePasswordUsingRecoveryTokenDTO) = ok {
+        userService.changePasswordUsingRecoveryToken(dto)
+    }
 
     /**
      * Generate an authentication token using email and password combination
@@ -38,5 +48,13 @@ class AuthenticationController @Autowired constructor(
     @GetMapping("/me")
     fun me(@AuthenticationPrincipal serviceRequester: ServiceRequester) = ok {
         userService.assertFindByUuid(serviceRequester.userUuid)
+    }
+
+    /**
+     * Send the password recovery email to the given email
+     */
+    @PostMapping("/public/send-password-recovery-email")
+    fun sendPasswordRecoveryEmail(@RequestBody dto: SendPasswordRecoveryEmailDTO) = ok {
+        userService.sendPasswordRecoveryEmail(dto.email)
     }
 }

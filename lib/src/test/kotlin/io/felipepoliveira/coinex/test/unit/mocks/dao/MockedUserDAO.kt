@@ -21,9 +21,11 @@ class MockedUserDAO @Autowired constructor(
 
     init {
         mockedDatabase.add(MockedObject { user1() })
+        mockedDatabase.add(MockedObject { user2() })
     }
 
     fun user1() = mockedCustomerDAO.customer1()
+    fun user2() = mockedCustomerDAO.customer2()
 
     override fun findByPrimaryEmail(primaryEmail: String): UserModel? {
         return mockedDatabase.find { m -> m.reference.primaryEmail == primaryEmail }?.mock()

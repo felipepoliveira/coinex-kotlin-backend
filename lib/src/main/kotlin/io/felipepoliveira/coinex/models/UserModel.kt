@@ -53,7 +53,7 @@ class UserModel(
      * Timestamp when the primary email was confirmed
      */
     @Column(name = "primary_email_confirmed_at", nullable = true)
-    val primaryEmailConfirmedAt: LocalDateTime?,
+    var primaryEmailConfirmedAt: LocalDateTime?,
 
     /**
      * Date when the account was created

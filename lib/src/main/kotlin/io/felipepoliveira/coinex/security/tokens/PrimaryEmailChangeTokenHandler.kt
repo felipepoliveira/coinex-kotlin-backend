@@ -6,23 +6,22 @@ import io.felipepoliveira.coinex.conf.ContextualDependencies
 import io.felipepoliveira.coinex.ext.toDate
 import io.felipepoliveira.coinex.ext.toLocalDateTime
 import io.felipepoliveira.coinex.models.UserModel
-import io.felipepoliveira.coinex.security.tokens.dto.EmailConfirmationTokenPayload
-import io.felipepoliveira.coinex.security.tokens.dto.PasswordRecoveryTokenPayload
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.*
 
 @Component
-class EmailConfirmationTokenHandler @Autowired constructor(
-    private val contextualDependencies: ContextualDependencies
+class PrimaryEmailChangeTokenHandler @Autowired constructor(
+    private val contextualDependencies: ContextualDependencies,
 ) {
+
     companion object {
         const val ISSUER: String = "coinex"
-        const val SUBJECT: String = "coinex:tokens:emailConfirmation:1.0"
+        const val SUBJECT: String = "coinex:tokens:primaryEmailChange:1.0"
     }
 
-    fun issue(user: UserModel, expiresAt: LocalDateTime): EmailConfirmationTokenPayload {
+    fun issue(user: UserModel, newEmail: String, secretCode: String, expiresAt: LocalDateTime): PrimaryEmailChangeTokenPayload {
         val userUuid = user.uuid
         val issuedAt = LocalDateTime.now()
         val token = JWT.create()
@@ -31,28 +30,55 @@ class EmailConfirmationTokenHandler @Autowired constructor(
             .withIssuedAt(issuedAt.toDate())
             .withExpiresAt(expiresAt.toDate())
             .withClaim("uuid", userUuid.toString())
+            .withClaim("newEmail", newEmail)
             .sign(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken()))
 
-        return EmailConfirmationTokenPayload(
-            issuedAt = issuedAt,
-            userUuid = userUuid,
-            expiresAt = expiresAt,
-            token = token
+        return PrimaryEmailChangeTokenPayload(
+            newEmail,
+            issuedAt,
+            expiresAt,
+            userUuid,
+            token,
         )
     }
 
-    fun validateAndParse(token: String): EmailConfirmationTokenPayload {
+    fun validateAndParse(token: String): PrimaryEmailChangeTokenPayload {
         val jwtPayload = JWT.require(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken()))
             .withIssuer(ISSUER)
             .withSubject(SUBJECT)
             .build()
             .verify(token)
 
-        return EmailConfirmationTokenPayload(
+        return PrimaryEmailChangeTokenPayload(
+            newEmail = jwtPayload.getClaim("newEmail").asString(),
             issuedAt = jwtPayload.issuedAt.toLocalDateTime(),
-            userUuid = UUID.fromString(jwtPayload.getClaim("uuid").asString()),
             expiresAt = jwtPayload.expiresAt.toLocalDateTime(),
-            token = token
+            userUuid = UUID.fromString(jwtPayload.getClaim("uuid").asString()),
+            token = token,
         )
     }
+
 }
+
+data class PrimaryEmailChangeTokenPayload(
+    /**
+     * The new email associated in the token
+     */
+    val newEmail: String,
+    /**
+     * Timestamp when the token was issued
+     */
+    val issuedAt: LocalDateTime,
+    /**
+     * Timestamp when the token will expire
+     */
+    val expiresAt: LocalDateTime,
+    /**
+     * The UUID of the user that requested the operation
+     */
+    val userUuid: UUID,
+    /**
+     * The token
+     */
+    val token: String,
+)
