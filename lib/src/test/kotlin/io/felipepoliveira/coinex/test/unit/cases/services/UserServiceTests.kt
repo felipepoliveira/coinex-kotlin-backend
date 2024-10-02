@@ -2,14 +2,12 @@ package io.felipepoliveira.coinex.test.unit.cases.services
 
 import io.felipepoliveira.coinex.ext.asServiceRequester
 import io.felipepoliveira.coinex.security.tokens.PasswordRecoveryTokenHandler
+import io.felipepoliveira.coinex.security.tokens.PrimaryEmailChangeTokenHandler
 import io.felipepoliveira.coinex.security.verifyPassword
 import io.felipepoliveira.coinex.services.BusinessRuleException
 import io.felipepoliveira.coinex.services.BusinessRuleExceptionType
 import io.felipepoliveira.coinex.services.UserService
-import io.felipepoliveira.coinex.services.dto.users.ChangePasswordUsingCurrentPasswordAsAuthenticationDTO
-import io.felipepoliveira.coinex.services.dto.users.ChangePasswordUsingRecoveryTokenDTO
-import io.felipepoliveira.coinex.services.dto.users.FindByEmailAndPasswordDTO
-import io.felipepoliveira.coinex.services.dto.users.SendPrimaryEmailChangeEmailDTO
+import io.felipepoliveira.coinex.services.dto.users.*
 import io.felipepoliveira.coinex.test.UnitTestsConfigurations
 import io.felipepoliveira.coinex.test.unit.mocks.dao.MockedUserDAO
 import io.kotest.assertions.throwables.shouldThrow
@@ -122,6 +120,63 @@ class ChangePasswordUsingRecoveryTokenTests @Autowired constructor(
 
         // Assert
         exception.type shouldBe BusinessRuleExceptionType.InvalidPassword
+    }
+})
+
+@SpringBootTest
+@ContextConfiguration(classes = [UnitTestsConfigurations::class])
+class ChangePrimaryEmailUsing @Autowired constructor(
+    private val mockedUserDAO: MockedUserDAO,
+    private val primaryEmailChangeTokenHandler: PrimaryEmailChangeTokenHandler,
+    private val userService: UserService,
+) : FunSpec({
+
+    test("Test success") {
+        // Arrange
+        val requester = mockedUserDAO.user1()
+        val newEmail = "new@email.com"
+        val secretCode = "ABC123"
+        val dto = ChangePrimaryEmailUsingTokenAndSecretCodeDTO(
+            token = primaryEmailChangeTokenHandler.issue(requester, newEmail, secretCode, expiresAt = LocalDateTime.now().plusHours(1)).token,
+            code = secretCode
+        )
+        // Act
+        val updatedUser = userService.changePrimaryEmailUsingTokenAndSecretCode(requester.asServiceRequester(), dto)
+
+        // Assert
+        updatedUser.primaryEmail shouldBe newEmail
+    }
+
+    test("Test if fails when secret code is incorrect") {
+        // Arrange
+        val requester = mockedUserDAO.user1()
+        val newEmail = "new@email.com"
+        val secretCode = "ABC123"
+        val dto = ChangePrimaryEmailUsingTokenAndSecretCodeDTO(
+            token = primaryEmailChangeTokenHandler.issue(requester, newEmail, secretCode, expiresAt = LocalDateTime.now().plusHours(1)).token,
+            code = "INVALID_CODE"
+        )
+        // Act
+        val exception = shouldThrow<BusinessRuleException> { userService.changePrimaryEmailUsingTokenAndSecretCode(requester.asServiceRequester(), dto) }
+
+        // Assert
+        exception.type shouldBe BusinessRuleExceptionType.InvalidCredentials
+    }
+
+    test("Test if fails when the newEmail in token is not available anymore") {
+        // Arrange
+        val requester = mockedUserDAO.user1()
+        val newEmail = mockedUserDAO.user2().primaryEmail
+        val secretCode = "ABC123"
+        val dto = ChangePrimaryEmailUsingTokenAndSecretCodeDTO(
+            token = primaryEmailChangeTokenHandler.issue(requester, newEmail, secretCode, expiresAt = LocalDateTime.now().plusHours(1)).token,
+            code = secretCode
+        )
+        // Act
+        val exception = shouldThrow<BusinessRuleException> { userService.changePrimaryEmailUsingTokenAndSecretCode(requester.asServiceRequester(), dto) }
+
+        // Assert
+        exception.type shouldBe BusinessRuleExceptionType.InvalidEmail
     }
 })
 

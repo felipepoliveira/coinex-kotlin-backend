@@ -41,7 +41,7 @@ class UserModel(
     @Column(name = "primary_email", nullable = false, length = 120)
     @field:Email
     @field:NotNull
-    val primaryEmail: String,
+    var primaryEmail: String,
     /**
      * The hashed password of the user
      */

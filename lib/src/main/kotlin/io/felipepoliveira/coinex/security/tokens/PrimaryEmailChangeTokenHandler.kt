@@ -31,7 +31,7 @@ class PrimaryEmailChangeTokenHandler @Autowired constructor(
             .withExpiresAt(expiresAt.toDate())
             .withClaim("uuid", userUuid.toString())
             .withClaim("newEmail", newEmail)
-            .sign(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken()))
+            .sign(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken() + secretCode.toByteArray()))
 
         return PrimaryEmailChangeTokenPayload(
             newEmail,
@@ -42,8 +42,8 @@ class PrimaryEmailChangeTokenHandler @Autowired constructor(
         )
     }
 
-    fun validateAndParse(token: String): PrimaryEmailChangeTokenPayload {
-        val jwtPayload = JWT.require(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken()))
+    fun validateAndParse(token: String, secretCode: String): PrimaryEmailChangeTokenPayload {
+        val jwtPayload = JWT.require(Algorithm.HMAC512(contextualDependencies.secretKeyForPasswordRecoveryToken() + secretCode.toByteArray()))
             .withIssuer(ISSUER)
             .withSubject(SUBJECT)
             .build()

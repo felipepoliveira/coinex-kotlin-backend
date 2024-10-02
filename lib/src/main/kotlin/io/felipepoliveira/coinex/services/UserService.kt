@@ -11,6 +11,7 @@ import io.felipepoliveira.coinex.security.hashPasswordToString
 import io.felipepoliveira.coinex.security.tokens.EmailConfirmationTokenHandler
 import io.felipepoliveira.coinex.security.tokens.PasswordRecoveryTokenHandler
 import io.felipepoliveira.coinex.security.tokens.PrimaryEmailChangeTokenHandler
+import io.felipepoliveira.coinex.security.tokens.PrimaryEmailChangeTokenPayload
 import io.felipepoliveira.coinex.security.tokens.dto.EmailConfirmationTokenPayload
 import io.felipepoliveira.coinex.security.tokens.dto.PasswordRecoveryTokenPayload
 import io.felipepoliveira.coinex.security.verifyPassword
@@ -130,6 +131,47 @@ class UserService @Autowired constructor(
         userDAO.update(user)
 
         return user
+    }
+
+    /**
+     * Change the user primary email using token and secret code
+     */
+    fun changePrimaryEmailUsingTokenAndSecretCode(
+        serviceRequester: ServiceRequester,
+        dto: ChangePrimaryEmailUsingTokenAndSecretCodeDTO): UserModel {
+
+        // make validation results
+        val validationResult = validate(dto)
+        if (validationResult.hasErrors()) {
+            throw BusinessRuleException(validationResult)
+        }
+
+        // Validate and parse the token
+        val tokenPayload: PrimaryEmailChangeTokenPayload
+        try {
+            tokenPayload = primaryEmailChangeTokenHandler.validateAndParse(dto.token, dto.code)
+        } catch (e: JWTVerificationException) {
+            throw BusinessRuleException(
+                type = BusinessRuleExceptionType.InvalidCredentials,
+                reason = "Email change token verification failed"
+            )
+        }
+
+        // check for email availability
+        if (userDAO.findByPrimaryEmail(tokenPayload.newEmail) != null) {
+            throw BusinessRuleException(
+                type = BusinessRuleExceptionType.InvalidEmail,
+                reason = "The email '${tokenPayload.newEmail}' is not available"
+            )
+        }
+
+        // Fetch the user from the database and update its primary email
+        val requester = assertFindByUuid(serviceRequester.userUuid)
+        requester.primaryEmail = tokenPayload.newEmail
+        requester.primaryEmailConfirmedAt = LocalDateTime.now()
+        userDAO.update(requester)
+
+        return requester
     }
 
     /**
