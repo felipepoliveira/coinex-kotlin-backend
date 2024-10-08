@@ -163,7 +163,7 @@ class ChangePrimaryEmailUsing @Autowired constructor(
         exception.type shouldBe BusinessRuleExceptionType.InvalidCredentials
     }
 
-    test("Test if fails when the newEmail in token is not available anymore") {
+    test("Test if fails when the newEmail in token is not available anymore because another user has the email") {
         // Arrange
         val requester = mockedUserDAO.user1()
         val newEmail = mockedUserDAO.user2().primaryEmail

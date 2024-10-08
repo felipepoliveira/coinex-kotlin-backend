@@ -4,12 +4,12 @@ import io.felipepoliveira.coinex.platformapi.rest.v1.dto.SendPasswordRecoveryEma
 import io.felipepoliveira.coinex.platformapi.security.AuthenticationTokenHandler
 import io.felipepoliveira.coinex.services.ServiceRequester
 import io.felipepoliveira.coinex.services.UserService
-import io.felipepoliveira.coinex.services.dto.users.ChangePasswordUsingRecoveryTokenDTO
-import io.felipepoliveira.coinex.services.dto.users.FindByEmailAndPasswordDTO
+import io.felipepoliveira.coinex.services.dto.users.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,11 +23,33 @@ class AuthenticationController @Autowired constructor(
 ) : BaseController() {
 
     /**
+     * Change the current password using the current one as authentication method
+     */
+    @PutMapping("/me/password")
+    fun changePassword(
+        @AuthenticationPrincipal serviceRequester: ServiceRequester,
+        @RequestBody dto: ChangePasswordUsingCurrentPasswordAsAuthenticationDTO
+    ) = ok {
+        userService.changePasswordUsingCurrentPasswordAsAuthentication(serviceRequester, dto)
+    }
+
+    /**
      * Change the password using password recovery token
      */
     @PostMapping("/public/change-password-using-recovery-token")
     fun changePasswordUsingRecoveryToken(@RequestBody dto: ChangePasswordUsingRecoveryTokenDTO) = ok {
         userService.changePasswordUsingRecoveryToken(dto)
+    }
+
+    /**
+     * Change the primary email using email token
+     */
+    @PutMapping("/me/primary-email")
+    fun changePrimaryEmailWithToken(
+        @AuthenticationPrincipal serviceRequester: ServiceRequester,
+        @RequestBody dto: ChangePrimaryEmailUsingTokenAndSecretCodeDTO
+    ) = ok {
+        userService.changePrimaryEmailUsingTokenAndSecretCode(serviceRequester, dto)
     }
 
     /**
@@ -56,5 +78,16 @@ class AuthenticationController @Autowired constructor(
     @PostMapping("/public/send-password-recovery-email")
     fun sendPasswordRecoveryEmail(@RequestBody dto: SendPasswordRecoveryEmailDTO) = ok {
         userService.sendPasswordRecoveryEmail(dto.email)
+    }
+
+    /**
+     * Send the primary email change email
+     */
+    @PostMapping("/public/send-primary-email-change-email")
+    fun sendPrimaryEmailChangeEmail(
+        @AuthenticationPrincipal serviceRequester: ServiceRequester,
+        @RequestBody dto: SendPrimaryEmailChangeEmailDTO
+    ) = ok {
+            userService.sendPrimaryEmailChangeEmail(serviceRequester, dto)
     }
 }
