@@ -2,10 +2,12 @@ package io.felipepoliveira.coinex.platformapi.rest.v1
 
 import io.felipepoliveira.coinex.platformapi.rest.v1.dto.SendPasswordRecoveryEmailDTO
 import io.felipepoliveira.coinex.platformapi.security.AuthenticationTokenHandler
+import io.felipepoliveira.coinex.platformapi.security.SecurityRoles
 import io.felipepoliveira.coinex.services.ServiceRequester
 import io.felipepoliveira.coinex.services.UserService
 import io.felipepoliveira.coinex.services.dto.users.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.annotation.Secured
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -26,6 +28,7 @@ class AuthenticationController @Autowired constructor(
      * Change the current password using the current one as authentication method
      */
     @PutMapping("/me/password")
+    @Secured(SecurityRoles.STL_MOST_RECENT)
     fun changePassword(
         @AuthenticationPrincipal serviceRequester: ServiceRequester,
         @RequestBody dto: ChangePasswordUsingCurrentPasswordAsAuthenticationDTO
