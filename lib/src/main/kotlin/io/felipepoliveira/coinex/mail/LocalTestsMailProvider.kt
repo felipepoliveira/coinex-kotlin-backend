@@ -52,5 +52,7 @@ class LocalTestsMailProvider(
         FileWriter(mailContentFile).use { writer ->
             writer.write(String(content))
         }
+
+        println("Email was successfully written in ${mailContentFile.path}")
     }
 }

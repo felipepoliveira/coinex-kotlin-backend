@@ -2,6 +2,7 @@ package io.felipepoliveira.coinex.platformapi.rest.v1
 
 import io.felipepoliveira.coinex.platformapi.rest.v1.dto.SendPasswordRecoveryEmailDTO
 import io.felipepoliveira.coinex.platformapi.security.AuthenticationTokenHandler
+import io.felipepoliveira.coinex.platformapi.security.RequestClient
 import io.felipepoliveira.coinex.platformapi.security.SecurityRoles
 import io.felipepoliveira.coinex.services.ServiceRequester
 import io.felipepoliveira.coinex.services.UserService
@@ -30,10 +31,10 @@ class AuthenticationController @Autowired constructor(
     @PutMapping("/me/password")
     @Secured(SecurityRoles.STL_MOST_RECENT)
     fun changePassword(
-        @AuthenticationPrincipal serviceRequester: ServiceRequester,
+        @AuthenticationPrincipal requestClient: RequestClient,
         @RequestBody dto: ChangePasswordUsingCurrentPasswordAsAuthenticationDTO
     ) = ok {
-        userService.changePasswordUsingCurrentPasswordAsAuthentication(serviceRequester, dto)
+        userService.changePasswordUsingCurrentPasswordAsAuthentication(requestClient.serviceRequester, dto)
     }
 
     /**
@@ -49,10 +50,10 @@ class AuthenticationController @Autowired constructor(
      */
     @PutMapping("/me/primary-email")
     fun changePrimaryEmailWithToken(
-        @AuthenticationPrincipal serviceRequester: ServiceRequester,
+        @AuthenticationPrincipal requestClient: RequestClient,
         @RequestBody dto: ChangePrimaryEmailUsingTokenAndSecretCodeDTO
     ) = ok {
-        userService.changePrimaryEmailUsingTokenAndSecretCode(serviceRequester, dto)
+        userService.changePrimaryEmailUsingTokenAndSecretCode(requestClient.serviceRequester, dto)
     }
 
     /**
@@ -71,8 +72,8 @@ class AuthenticationController @Autowired constructor(
      * Return information about the authenticated user
      */
     @GetMapping("/me")
-    fun me(@AuthenticationPrincipal serviceRequester: ServiceRequester) = ok {
-        userService.assertFindByUuid(serviceRequester.userUuid)
+    fun me(@AuthenticationPrincipal requestClient: RequestClient) = ok {
+        userService.assertFindByUuid(requestClient.serviceRequester.userUuid)
     }
 
     /**
@@ -86,11 +87,14 @@ class AuthenticationController @Autowired constructor(
     /**
      * Send the primary email change email
      */
-    @PostMapping("/public/send-primary-email-change-email")
+    @PostMapping("/send-primary-email-change-email")
     fun sendPrimaryEmailChangeEmail(
-        @AuthenticationPrincipal serviceRequester: ServiceRequester,
+        @AuthenticationPrincipal requestClient: RequestClient,
         @RequestBody dto: SendPrimaryEmailChangeEmailDTO
     ) = ok {
-            userService.sendPrimaryEmailChangeEmail(serviceRequester, dto)
+            userService.sendPrimaryEmailChangeEmail(requestClient.serviceRequester, dto)
     }
+
+    @GetMapping("/session")
+    fun session(@AuthenticationPrincipal requestClient: RequestClient) = ok { requestClient }
 }

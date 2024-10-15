@@ -22,7 +22,7 @@ fun generateRandomText(seed: String, amountOfCharacters: Int): String {
     val rand = Random(System.currentTimeMillis())
     val stringBuffer = StringBuffer()
     for (i in 0..amountOfCharacters) {
-        stringBuffer.append(rand.nextInt(seed.length))
+        stringBuffer.append(seed[rand.nextInt(seed.length)])
     }
 
     return stringBuffer.toString()

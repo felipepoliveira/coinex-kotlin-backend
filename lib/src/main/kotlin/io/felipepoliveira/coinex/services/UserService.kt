@@ -278,7 +278,7 @@ class UserService @Autowired constructor(
         val requester = assertFindByUuid(serviceRequester.userUuid)
 
         serviceTimeoutCache.executeOnTimeout("USER-${serviceRequester.userUuid}-PRIMARY_EMAIL_CHANGE_MAIL", 5.toDuration(DurationUnit.MINUTES)) {
-            val secretCode = generateRandomText(LETTERS_UPPER_CASE+DIGITS, 12)
+            val secretCode = generateRandomText(LETTERS_UPPER_CASE+DIGITS, 8)
             val tokenPayload = primaryEmailChangeTokenHandler.issue(
                 user = requester,
                 newEmail = dto.newEmail,
