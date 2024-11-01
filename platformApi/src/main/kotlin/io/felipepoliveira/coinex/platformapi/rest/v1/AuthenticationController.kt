@@ -76,6 +76,11 @@ class AuthenticationController @Autowired constructor(
         userService.assertFindByUuid(requestClient.serviceRequester.userUuid)
     }
 
+    @PostMapping("/send-email-confirmation-email")
+    fun sendEmailConfirmationMail(@AuthenticationPrincipal requestClient: RequestClient) = ok {
+        userService.sendEmailConfirmationEmail(requestClient.serviceRequester)
+    }
+
     /**
      * Send the password recovery email to the given email
      */

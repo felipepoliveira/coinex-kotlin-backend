@@ -17,6 +17,7 @@ repositories {
 allOpen {
     // Marks all below to be all open
     annotation("org.springframework.context.annotation.Configuration")
+    annotation("org.springframework.web.bind.annotation.RestController")
     annotation("jakarta.persistence.Entity")
 }
 

@@ -21,6 +21,7 @@ import io.felipepoliveira.coinex.utils.text.LETTERS_UPPER_CASE
 import io.felipepoliveira.coinex.utils.text.generateRandomText
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.SmartValidator
 import java.time.LocalDateTime
 import java.util.UUID
@@ -64,6 +65,7 @@ class UserService @Autowired constructor(
     /**
      * Change the user password using the current password as authentication method
      */
+    @Transactional
     fun changePasswordUsingCurrentPasswordAsAuthentication(
         serviceRequester: ServiceRequester,
         dto: ChangePasswordUsingCurrentPasswordAsAuthenticationDTO): UserModel {
