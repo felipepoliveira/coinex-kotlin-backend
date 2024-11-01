@@ -70,7 +70,7 @@ class PlatformApiConfiguration {
     fun customAccessDeniedHandler(): AccessDeniedHandler {
         return AccessDeniedHandler { _: HttpServletRequest, response: HttpServletResponse, _: AccessDeniedException ->
             response.status = HttpStatus.FORBIDDEN.value()
-            response.addHeader("X-Reason", "Access Denied: You do not have sufficient permissions to access this resource.")
+            response.addHeader("X-Error", "Access Denied: You do not have sufficient permissions to access this resource.")
         }
     }
 }

@@ -40,12 +40,12 @@ class AuthenticationController @Autowired constructor(
     /**
      * Change the password using password recovery token
      */
-    @PostMapping("/public/change-password-using-recovery-token")
+    @PutMapping("/public/change-password-using-recovery-token")
     fun changePasswordUsingRecoveryToken(@RequestBody dto: ChangePasswordUsingRecoveryTokenDTO) = ok {
         userService.changePasswordUsingRecoveryToken(dto)
     }
 
-    /**
+    /**\
      * Change the primary email using email token
      */
     @PutMapping("/me/primary-email")
